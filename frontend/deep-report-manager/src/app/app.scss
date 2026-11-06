@@ -1,0 +1,67 @@
+.app-bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  height: var(--bar-height);
+  padding: 0 24px;
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-size: 18px;
+
+  &:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 4px;
+    border-radius: 6px;
+  }
+}
+
+.brand-name {
+  font-weight: 700;
+}
+
+.brand-product {
+  font-weight: 500;
+  color: #c9d3ec;
+}
+
+/* Three bars of shrinking length: rows narrowed down by filters. */
+.brand-mark {
+  .tile {
+    fill: var(--cobalt);
+  }
+
+  .bar {
+    fill: #ffffff;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -48px;
+  z-index: 30;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--cobalt);
+  font-weight: 600;
+
+  &:focus {
+    top: 8px;
+  }
+}
+
+main:focus {
+  outline: none;
+}

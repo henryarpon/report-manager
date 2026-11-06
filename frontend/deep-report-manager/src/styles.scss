@@ -1,0 +1,307 @@
+@use '@angular/material' as mat;
+@use 'styles/filters';
+@use 'styles/pickers';
+@use 'styles/report';
+@use 'styles/table';
+
+/*
+ * DEEP Reports design tokens.
+ * Navy ink on a cool, slightly blue paper; cobalt for actions, focus and selection;
+ * amber only for "changes not applied yet".
+ * Text pairs meet WCAG AA: ink 15:1, muted 7:1, cobalt 7.4:1, amber 6.6:1 on white.
+ * Form outlines use --outline (≥ 3:1 non-text contrast); --line is for decorative dividers only.
+ */
+:root {
+  --ink: #14213d;
+  --ink-muted: #4a5568;
+  --ink-faint: #6b7280;
+  --paper: #eef1f6;
+  --surface: #ffffff;
+  --surface-sunk: #f6f8fb;
+  --line: #dde2ea;
+  --outline: #7a8494;
+  --cobalt: #2348c8;
+  --cobalt-strong: #1a379e;
+  --cobalt-wash: #e9eefc;
+  --cobalt-line: #b9c6f3;
+  --amber: #8f4c06;
+  --amber-wash: #fff4e2;
+  --amber-line: #f0c27a;
+  --danger: #b42318;
+  --danger-wash: #fdeceb;
+  --success: #17663a;
+  --success-wash: #e7f5ec;
+
+  --font: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque', 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+
+  --radius-panel: 14px;
+  --radius-control: 10px;
+  --shadow-panel: 0 1px 2px rgb(20 33 61 / 6%), 0 4px 16px rgb(20 33 61 / 6%);
+  --shadow-pop: 0 4px 12px rgb(20 33 61 / 10%), 0 16px 40px rgb(20 33 61 / 14%);
+
+  --bar-height: 56px;
+  --rail-width: 380px;
+}
+
+html {
+  color-scheme: light;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$blue-palette,
+        tertiary: mat.$orange-palette,
+      ),
+      typography: (
+        plain-family: 'IBM Plex Sans',
+        brand-family: 'IBM Plex Sans',
+        bold-weight: 600,
+        medium-weight: 500,
+        regular-weight: 400,
+      ),
+      density: -2,
+    )
+  );
+
+  @include mat.theme-overrides(
+    (
+      primary: #2348c8,
+      on-primary: #ffffff,
+      primary-container: #e9eefc,
+      on-primary-container: #1a379e,
+      secondary-container: #e9eefc,
+      on-secondary-container: #1a379e,
+      surface: #ffffff,
+      on-surface: #14213d,
+      on-surface-variant: #4a5568,
+      surface-container-lowest: #ffffff,
+      surface-container-low: #f6f8fb,
+      surface-container: #ffffff,
+      surface-container-high: #ffffff,
+      surface-container-highest: #eef1f6,
+      outline: #7a8494,
+      outline-variant: #dde2ea,
+      error: #b42318,
+      corner-full: 999px,
+      corner-large: 14px,
+      corner-medium: 10px,
+      corner-small: 10px,
+      corner-extra-small: 8px,
+      body-large-tracking: 0,
+      body-medium-tracking: 0,
+      body-small-tracking: 0,
+      label-large-tracking: 0,
+      label-medium-tracking: 0,
+      label-small-tracking: 0,
+      title-medium-tracking: 0,
+      title-small-tracking: 0,
+    )
+  );
+
+  @include mat.strong-focus-indicators(
+    (
+      border-color: #2348c8,
+      border-width: 2px,
+      border-radius: 10px,
+    )
+  );
+
+  @include mat.button-overrides(
+    (
+      filled-container-shape: 10px,
+      outlined-container-shape: 10px,
+      text-container-shape: 10px,
+      outlined-outline-color: #7a8494,
+    )
+  );
+
+  @include mat.table-overrides(
+    (
+      background-color: transparent,
+      header-headline-color: #4a5568,
+      header-headline-weight: 600,
+      header-container-height: 44px,
+      row-item-container-height: 42px,
+      row-item-outline-color: #e8ecf2,
+      row-item-label-text-color: #14213d,
+    )
+  );
+
+  @include mat.paginator-overrides(
+    (
+      container-background-color: transparent,
+    )
+  );
+
+  @include mat.form-field-overrides(
+    (
+      outlined-outline-color: #7a8494,
+    )
+  );
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font);
+  color: var(--ink);
+}
+
+button {
+  font-family: inherit;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.muted {
+  color: var(--ink-muted);
+}
+
+.error-text {
+  color: var(--danger);
+}
+
+kbd {
+  display: inline-block;
+  padding: 0 5px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-family: var(--font);
+  font-size: 11px;
+  line-height: 16px;
+  opacity: 0.85;
+}
+
+.notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--ink);
+
+  > .mat-icon {
+    flex: none;
+  }
+
+  > .notice-text {
+    flex: 1 1 240px;
+    margin: 0;
+  }
+
+  &.error {
+    border-color: #f2b8b2;
+    background: var(--danger-wash);
+
+    > .mat-icon {
+      color: var(--danger);
+    }
+  }
+
+  &.success {
+    border-color: #a9d9bb;
+    background: var(--success-wash);
+
+    > .mat-icon {
+      color: var(--success);
+    }
+  }
+
+  &.pending {
+    border-color: var(--amber-line);
+    background: var(--amber-wash);
+
+    > .mat-icon {
+      color: var(--amber);
+    }
+  }
+}
+
+/* Chip-style tags used for picked values and the report sentence. */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  min-height: 28px;
+  padding: 0 4px 0 10px;
+  border-radius: 999px;
+  background: var(--cobalt-wash);
+  color: var(--cobalt-strong);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.tag-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tag-remove {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+
+  .mat-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+
+  &:hover {
+    background: rgb(35 72 200 / 14%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cobalt);
+    outline-offset: 1px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

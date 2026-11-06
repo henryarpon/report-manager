@@ -1,0 +1,236 @@
+@if (catalogError(); as error) {
+  <div class="page-message">
+    <mat-icon class="page-message-icon" aria-hidden="true">cloud_off</mat-icon>
+    <h1>Reports can't load right now</h1>
+    <p class="muted">The list of report fields didn't load. {{ error }}</p>
+    <button mat-flat-button type="button" (click)="catalog.reload()">Try again</button>
+  </div>
+} @else if (!catalogValue()) {
+  <div class="page-message">
+    <h1 class="visually-hidden">Reports</h1>
+    <mat-progress-bar mode="indeterminate" aria-label="Loading report fields" />
+  </div>
+} @else {
+  <div class="layout" [class.rail-closed]="!railOpen()">
+    <aside
+      id="builder"
+      class="rail"
+      aria-labelledby="builder-heading"
+      [hidden]="!railOpen()"
+      (keydown.control.enter)="runReport()"
+      (keydown.meta.enter)="runReport()"
+    >
+      <div class="rail-body">
+        <h1 id="builder-heading" class="rail-title">Build a report</h1>
+
+        <fieldset class="step">
+          <legend class="step-title">Show one row per</legend>
+          <div class="root-cards">
+            @for (root of catalogValue()!.roots; track root.key) {
+              <label class="root-card" [class.selected]="root.key === rootKey()">
+                <input
+                  type="radio"
+                  name="report-root"
+                  class="visually-hidden"
+                  [value]="root.key"
+                  [checked]="root.key === rootKey()"
+                  [attr.aria-describedby]="'root-desc-' + root.key"
+                  (change)="setRoot(root.key)"
+                />
+                <mat-icon class="root-icon" aria-hidden="true">{{ rootDetails[root.key].icon }}</mat-icon>
+                <span class="root-label">{{ root.label }}</span>
+                <span class="visually-hidden" [id]="'root-desc-' + root.key">{{ rootDetails[root.key].description }}</span>
+              </label>
+            }
+          </div>
+          <p class="muted step-note root-note" aria-hidden="true">{{ rootDetails[rootKey()].description }}.</p>
+        </fieldset>
+
+        @if (root(); as currentRoot) {
+          <section class="step" aria-labelledby="columns-label">
+            <h2 id="columns-label" class="step-title">Columns</h2>
+            <app-column-picker [columns]="currentRoot.columns" [selected]="columns()" (selectedChange)="setColumns($event)" />
+          </section>
+        }
+
+        <section class="step" aria-labelledby="filters-label">
+          <div class="step-head">
+            <h2 id="filters-label" class="step-title">
+              Filters
+              @if (filterViews().length) {
+                <span class="step-count">{{ filterViews().length }}</span>
+              }
+            </h2>
+            @if (filterViews().length) {
+              <button mat-button type="button" class="quiet-button" (click)="clearFilters()">Clear all</button>
+            }
+          </div>
+          @if (filterViews().length === 0) {
+            <p class="muted step-note">Every row is included. Add a filter to narrow it down.</p>
+          } @else {
+            <p class="muted step-note">Rows must match every filter.</p>
+          }
+          @if (sameTransactionNote(); as note) {
+            <p class="step-hint">
+              <mat-icon aria-hidden="true">info_outline</mat-icon>
+              <span>{{ note }}</span>
+            </p>
+          }
+          <div class="filter-list">
+            @for (view of filterViews(); track view.draft.id) {
+              <app-filter-row
+                [draft]="view.draft"
+                [filter]="view.filter"
+                [scope]="view.scope"
+                [programIds]="view.programIds"
+                [incomplete]="showIncomplete() && !view.request"
+                (draftChange)="updateFilter($event)"
+                (removed)="removeFilter(view.draft.id)"
+              />
+            }
+          </div>
+          <app-filter-picker [groups]="filterGroups()" [scopes]="pickerScopes()" (picked)="addFilter($event)" />
+        </section>
+      </div>
+
+      <div class="rail-footer" [class.pending]="dirty()">
+        @if (showIncomplete() && incompleteCount() > 0) {
+          <p class="footer-note error-text" role="alert">
+            <mat-icon aria-hidden="true">error_outline</mat-icon>
+            Finish or remove {{ incompleteCount() }} incomplete {{ incompleteCount() === 1 ? 'filter' : 'filters' }} first.
+          </p>
+        } @else if (dirty()) {
+          <p class="footer-note pending-text">
+            <mat-icon aria-hidden="true">edit_note</mat-icon>
+            You have changes that aren't applied yet.
+          </p>
+        }
+        <div class="footer-actions">
+          @if (dirty()) {
+            <button mat-button type="button" (click)="discardChanges()">Discard</button>
+          }
+          <button mat-flat-button type="button" class="run-button" (click)="runReport()">
+            <mat-icon aria-hidden="true">play_arrow</mat-icon>
+            {{ dirty() ? 'Apply changes' : 'Run report' }}
+            <kbd aria-hidden="true">Ctrl ⏎</kbd>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <section class="stage" aria-labelledby="results-heading" [attr.aria-busy]="run.isLoading()">
+      <div class="stage-toolbar">
+        <button
+          mat-button
+          type="button"
+          class="rail-toggle"
+          aria-controls="builder"
+          [attr.aria-expanded]="railOpen()"
+          (click)="toggleRail()"
+        >
+          <mat-icon aria-hidden="true">{{ railOpen() ? 'keyboard_double_arrow_left' : 'tune' }}</mat-icon>
+          {{ railOpen() ? 'Hide builder' : 'Edit report' }}
+        </button>
+        <span class="toolbar-spacer"></span>
+        <button
+          mat-flat-button
+          type="button"
+          class="export-button"
+          [disabled]="!result()?.totalCount || exporting()"
+          (click)="exportReport()"
+        >
+          <mat-icon aria-hidden="true">{{ exporting() ? 'hourglass_top' : 'download' }}</mat-icon>
+          @if (exporting()) {
+            Exporting…
+          } @else if (countParts(); as parts) {
+            Export {{ parts.total === 1 ? '1 row' : parts.number + ' rows' }}
+          } @else {
+            Export CSV
+          }
+        </button>
+      </div>
+
+      <header class="stage-head" [class.stale]="dirty()">
+        @if (countParts(); as parts) {
+          <h2 id="results-heading" class="count">
+            <span class="count-number">{{ parts.number }}</span>
+            <span class="count-noun">{{ parts.noun }}</span>
+          </h2>
+          @if (appliedClauses().length) {
+            <p class="sentence">
+              <span class="sentence-word">where</span>
+              @for (clause of appliedClauses(); track clause.draftId; let last = $last) {
+                <button type="button" class="clause" [attr.aria-label]="'Edit filter: ' + clause.text" (click)="editClause(clause.draftId)">
+                  {{ clause.text }}
+                  <mat-icon aria-hidden="true">edit</mat-icon>
+                </button>
+                @if (!last) {
+                  <span class="sentence-word">and</span>
+                }
+              }
+            </p>
+          } @else {
+            <p class="sentence muted">Every {{ rootNoun() }} is included. Add filters in the builder to narrow it down.</p>
+          }
+        } @else {
+          <h2 id="results-heading" class="count">
+            <span class="count-noun">{{ run.isLoading() ? 'Loading report…' : 'Run a report to see rows here' }}</span>
+          </h2>
+        }
+      </header>
+
+      @if (dirty() && !railOpen()) {
+        <div class="notice pending" role="status">
+          <mat-icon aria-hidden="true">edit_note</mat-icon>
+          <p class="notice-text">The table still shows the previous report. Apply your changes to update it.</p>
+          <button mat-button type="button" (click)="discardChanges()">Discard</button>
+          <button mat-flat-button type="button" (click)="runReport()">Apply changes</button>
+        </div>
+      }
+      @if (exportNotice(); as notice) {
+        <div class="notice" [class.error]="notice.kind === 'error'" [class.success]="notice.kind === 'success'" role="status">
+          <mat-icon aria-hidden="true">{{ notice.kind === 'error' ? 'error_outline' : 'check_circle' }}</mat-icon>
+          <p class="notice-text">{{ notice.text }}</p>
+          <button mat-icon-button type="button" aria-label="Dismiss" (click)="exportNotice.set(null)">
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        </div>
+      }
+      @if (runError(); as error) {
+        <div class="notice error" role="alert">
+          <mat-icon aria-hidden="true">error_outline</mat-icon>
+          <p class="notice-text">{{ error }}</p>
+          <button mat-button type="button" (click)="run.reload()">Try again</button>
+        </div>
+      }
+
+      <div class="results-card">
+        <div class="progress-slot">
+          @if (run.isLoading()) {
+            <mat-progress-bar mode="indeterminate" aria-label="Loading report" />
+          }
+        </div>
+        @if (result(); as page) {
+          <app-report-table
+            [page]="page"
+            [sort]="sort()!"
+            [sortableKeys]="sortableKeys()"
+            [pageSizeOptions]="pageSizeOptions()"
+            [caption]="headline() ?? 'Report results'"
+            [loading]="run.isLoading()"
+            [hasFilters]="appliedClauses().length > 0"
+            (sortChange)="changeSort($event)"
+            (pageChange)="changePage($event)"
+            (clearFilters)="clearFilters(); runReport()"
+          />
+        } @else if (run.isLoading()) {
+          <div class="table-skeleton" aria-hidden="true">
+            @for (row of [1, 2, 3, 4, 5, 6, 7, 8]; track row) {
+              <div class="skeleton-row"></div>
+            }
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+}

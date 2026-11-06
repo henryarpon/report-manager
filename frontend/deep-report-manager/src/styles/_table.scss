@@ -1,0 +1,112 @@
+/* ---------- Report table (app-report-table) ---------- */
+
+app-report-table {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+
+  &.loading .table-scroll {
+    opacity: 0.55;
+    transition: opacity 160ms 150ms;
+  }
+}
+
+.table-scroll {
+  flex: 1;
+  overflow: auto;
+  min-height: 240px;
+
+  @media (max-width: 1000px) {
+    flex: none;
+    max-height: 70vh;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cobalt);
+    outline-offset: -2px;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  th,
+  td {
+    white-space: nowrap;
+    padding-inline: 16px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  th.mat-mdc-header-cell {
+    background: var(--surface-sunk);
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+  }
+
+  td.mat-mdc-cell {
+    font-size: 14px;
+  }
+
+  tr.mat-mdc-row:hover td {
+    background: #f4f7fd;
+  }
+
+  .cell-text {
+    display: inline-block;
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+  }
+
+  .numeric {
+    text-align: right;
+  }
+
+  .date {
+    color: var(--ink-muted);
+  }
+
+  .empty {
+    color: var(--ink-faint);
+  }
+
+  .no-data {
+    padding: 0;
+  }
+}
+
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 56px 16px;
+  text-align: center;
+  white-space: normal;
+
+  > .mat-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 36px;
+    color: var(--ink-faint);
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .empty-title {
+    margin-top: 8px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  button {
+    margin-top: 14px;
+  }
+}
+
+app-report-table .mat-mdc-paginator {
+  border-top: 1px solid var(--line);
+}

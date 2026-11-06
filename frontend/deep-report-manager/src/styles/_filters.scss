@@ -1,0 +1,154 @@
+/* ---------- Filter cards (app-filter-row) and their value editors ---------- */
+
+.filter-row {
+  display: block;
+  padding: 12px 14px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  transition: border-color 120ms, box-shadow 120ms;
+
+  &:focus-within {
+    border-color: var(--cobalt-line);
+    box-shadow: 0 0 0 3px var(--cobalt-wash);
+  }
+
+  &.incomplete {
+    border-color: var(--danger);
+  }
+}
+
+.filter-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+}
+
+.filter-entity {
+  flex: none;
+  padding: 1px 8px;
+  border-radius: 6px;
+  background: var(--surface-sunk);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 600;
+
+  &[data-entity='Transaction'] {
+    background: #e9eefc;
+    color: #1a379e;
+  }
+
+  &[data-entity='Customer'] {
+    background: #e7f5ec;
+    color: #17663a;
+  }
+
+  &[data-entity='Program'] {
+    background: #f4ebfb;
+    color: #6b2c91;
+  }
+}
+
+.filter-title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-head .remove-button {
+  margin: -6px -8px -6px 0;
+  color: var(--ink-muted);
+
+  &:hover {
+    color: var(--danger);
+  }
+}
+
+.filter-scope {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--ink-muted);
+
+  .mat-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+}
+
+.filter-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+
+  > mat-form-field {
+    width: 100%;
+  }
+}
+
+.op-toggle.mat-button-toggle-group {
+  --mat-button-toggle-height: 32px;
+  --mat-button-toggle-shape: 8px;
+  --mat-button-toggle-selected-state-background-color: var(--ink);
+  --mat-button-toggle-selected-state-text-color: #ffffff;
+  --mat-button-toggle-label-text-size: 13px;
+  --mat-button-toggle-label-text-weight: 500;
+  align-self: flex-start;
+  max-width: 100%;
+}
+
+.op-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
+app-option-select,
+app-lookup-typeahead,
+app-column-picker,
+app-filter-picker {
+  display: block;
+}
+
+.value-field {
+  width: 100%;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.picks {
+  margin-top: 8px;
+}
+
+.filter-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 500;
+
+  .mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}

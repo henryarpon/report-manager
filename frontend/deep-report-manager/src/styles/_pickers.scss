@@ -1,0 +1,170 @@
+/* ---------- Column picker and Add filter picker (trigger + popover) ---------- */
+
+.column-summary {
+  display: grid;
+  gap: 10px;
+}
+
+.picker-note {
+  margin: 0;
+  font-size: 13px;
+}
+
+.picker-trigger.mat-mdc-outlined-button {
+  width: 100%;
+  height: 40px;
+  justify-content: flex-start;
+}
+
+.add-filter.mat-mdc-outlined-button {
+  justify-content: center;
+  border-style: dashed;
+}
+
+.trigger-count {
+  margin-left: auto;
+  padding-left: 12px;
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.popover {
+  display: flex;
+  flex-direction: column;
+  width: 340px;
+  max-width: calc(100vw - 32px);
+  max-height: inherit;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  background: var(--surface);
+  box-shadow: var(--shadow-pop);
+  color: var(--ink);
+  font-family: var(--font);
+  overflow: hidden;
+}
+
+.popover-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--line);
+
+  .mat-icon {
+    color: var(--ink-muted);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 48px;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    outline: none;
+
+    &::placeholder {
+      color: var(--ink-faint);
+    }
+  }
+
+  &:focus-within {
+    box-shadow: inset 0 -2px 0 var(--cobalt);
+  }
+}
+
+.popover-body {
+  flex: 1;
+  min-height: 0;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 6px 6px 10px;
+}
+
+.popover-group {
+  margin: 0;
+  padding: 6px 0 2px;
+  border: 0;
+  min-width: 0;
+
+  legend,
+  .group-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+    margin: 0;
+    padding: 8px 10px 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  mat-checkbox {
+    display: block;
+  }
+}
+
+.group-scope {
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+.pick-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+
+  .mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    color: var(--ink-muted);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cobalt-wash);
+    color: var(--cobalt-strong);
+    outline: none;
+
+    .mat-icon {
+      color: var(--cobalt);
+    }
+  }
+
+  &:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--cobalt);
+  }
+}
+
+.popover-empty {
+  margin: 0;
+  padding: 16px 10px;
+  font-size: 14px;
+}
+
+.popover-foot {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--line);
+  background: var(--surface-sunk);
+}
+
+.popover-done {
+  margin-left: auto;
+}

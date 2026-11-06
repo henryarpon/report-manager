@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/JTI.DEEP.Reports.Domain/JTI.DEEP.Reports.Domain.csproj" />
+    <Project Path="src/JTI.DEEP.Reports.Application/JTI.DEEP.Reports.Application.csproj" />
+    <Project Path="src/JTI.DEEP.Reports.Infrastructure/JTI.DEEP.Reports.Infrastructure.csproj" />
+    <Project Path="src/JTI.DEEP.Reports.API/JTI.DEEP.Reports.API.csproj" />
+  </Folder>
+</Solution>

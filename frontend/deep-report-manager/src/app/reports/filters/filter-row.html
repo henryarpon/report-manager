@@ -1,0 +1,102 @@
+<div class="filter-head">
+  <span class="filter-entity" [attr.data-entity]="filter().entity">{{ filter().entity }}</span>
+  <h3 class="filter-title">{{ filter().label }}</h3>
+  <button
+    mat-icon-button
+    type="button"
+    class="remove-button"
+    [attr.aria-label]="'Remove filter ' + filter().label"
+    (click)="removed.emit()"
+  >
+    <mat-icon aria-hidden="true">delete_outline</mat-icon>
+  </button>
+</div>
+@if (scope(); as scopeText) {
+  <p class="filter-scope">
+    <mat-icon aria-hidden="true">subdirectory_arrow_right</mat-icon>
+    {{ scopeText }}…
+  </p>
+}
+
+<div class="filter-controls">
+  @if (filter().operators.length > 1) {
+    <mat-button-toggle-group
+      class="op-toggle"
+      [attr.aria-label]="filter().label + ' condition'"
+      [value]="draft().op"
+      (change)="patch({ op: $event.value })"
+      hideSingleSelectionIndicator
+    >
+      @for (op of filter().operators; track op) {
+        <mat-button-toggle [value]="op">{{ operatorLabels[op] ?? op }}</mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+  } @else {
+    <span class="op-text">{{ operatorLabels[draft().op] ?? draft().op }}</span>
+  }
+
+  @switch (editor()) {
+    @case ('text') {
+      <mat-form-field appearance="outline" class="value-field" subscriptSizing="dynamic">
+        <mat-label>Value</mat-label>
+        <input matInput maxlength="200" [value]="draft().text" (input)="patch({ text: textInput.value })" #textInput />
+      </mat-form-field>
+    }
+    @case ('date') {
+      <mat-form-field appearance="outline" class="value-field" subscriptSizing="dynamic">
+        <mat-label>Date</mat-label>
+        <input matInput [matDatepicker]="picker" [value]="draft().from" (dateInput)="patch({ from: $event.value })" (dateChange)="patch({ from: $event.value })" />
+        <mat-datepicker-toggle matIconSuffix [for]="picker" />
+        <mat-datepicker #picker />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+      </mat-form-field>
+    }
+    @case ('date-range') {
+      <mat-form-field appearance="outline" class="value-field" subscriptSizing="dynamic">
+        <mat-label>Date range</mat-label>
+        <mat-date-range-input [rangePicker]="rangePicker">
+          <input matStartDate placeholder="Start date" [value]="draft().from" (dateInput)="patch({ from: $event.value })" (dateChange)="patch({ from: $event.value })" />
+          <input matEndDate placeholder="End date" [value]="draft().to" (dateInput)="patch({ to: $event.value })" (dateChange)="patch({ to: $event.value })" />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="rangePicker" />
+        <mat-date-range-picker #rangePicker />
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY, both days included</mat-hint>
+      </mat-form-field>
+    }
+    @case ('enum') {
+      <app-option-select
+        label="Values"
+        [options]="enumOptions()"
+        [items]="draft().items"
+        (itemsChange)="patch({ items: $event })"
+      />
+    }
+    @case ('static-lookup') {
+      <app-option-select
+        [label]="draft().op === 'in' ? 'Values' : 'Value'"
+        [source]="filter().lookup"
+        [multiple]="draft().op === 'in'"
+        [items]="draft().items"
+        (itemsChange)="patch({ items: $event })"
+      />
+    }
+    @case ('typeahead') {
+      <app-lookup-typeahead
+        [label]="filter().label"
+        [source]="filter().lookup!"
+        [minChars]="minChars()"
+        [programIds]="programIds()"
+        [disabled]="waitingForParent()"
+        disabledHint="Add a Program filter and pick a program first"
+        [items]="draft().items"
+        (itemsChange)="patch({ items: $event })"
+      />
+    }
+  }
+</div>
+@if (incomplete()) {
+  <p class="filter-error" role="status">
+    <mat-icon aria-hidden="true">error_outline</mat-icon>
+    Enter a value, or remove this filter.
+  </p>
+}

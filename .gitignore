@@ -1,0 +1,12 @@
+# Root of the DEEP-Report workspace (backend/ and frontend/ have their own .gitignore files).
+
+# Local backups
+.bak-frontend/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Claude Code local settings
+.claude/settings.local.json

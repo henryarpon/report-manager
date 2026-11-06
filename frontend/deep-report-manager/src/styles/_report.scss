@@ -1,0 +1,118 @@
+/* ---------- Reports page: report type cards and the report sentence ---------- */
+
+/* Report type: one card per root, a radio group underneath. */
+.root-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.root-card {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 12px 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 120ms, background-color 120ms;
+
+  &:hover {
+    border-color: var(--outline);
+    color: var(--ink);
+  }
+
+  &:has(input:focus-visible) {
+    outline: 2px solid var(--cobalt);
+    outline-offset: 2px;
+  }
+
+  &.selected {
+    border-color: var(--cobalt);
+    background: var(--cobalt-wash);
+    box-shadow: inset 0 0 0 1px var(--cobalt);
+    color: var(--cobalt-strong);
+    font-weight: 600;
+  }
+}
+
+.root-note {
+  margin: 10px 0 0;
+}
+
+/* The report as a sentence: the big count, then its filters as editable clauses. */
+.count {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 14px;
+  margin: 0;
+  font-family: var(--font-display);
+  line-height: 1.05;
+}
+
+.count-number {
+  font-size: clamp(40px, 5vw, 60px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.count-noun {
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 500;
+  color: var(--ink-muted);
+  letter-spacing: -0.01em;
+}
+
+.sentence {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-width: 90ch;
+  margin: 14px 0 0;
+  font-size: 16px;
+}
+
+.sentence-word {
+  color: var(--ink-muted);
+}
+
+.clause {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 4px 10px 4px 12px;
+  border: 1px solid var(--cobalt-line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--cobalt-strong);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+
+  .mat-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    opacity: 0.7;
+  }
+
+  &:hover {
+    background: var(--cobalt-wash);
+    border-color: var(--cobalt);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cobalt);
+    outline-offset: 2px;
+  }
+}
+
